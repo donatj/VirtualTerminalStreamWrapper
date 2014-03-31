@@ -1,8 +1,6 @@
 <?php
 
-
 namespace donatj\VirtualTerminal;
-
 
 class OutputStream {
 //	var $position;

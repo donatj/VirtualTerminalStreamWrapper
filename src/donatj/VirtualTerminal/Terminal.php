@@ -1,10 +1,10 @@
 <?php
 
-
 namespace donatj\VirtualTerminal;
 
-
 class Terminal {
+
+	var $matrix = array();
 
 	/**
 	 * @var int
@@ -23,26 +23,38 @@ class Terminal {
 	protected $STDOUT;
 
 	/**
-	 * @return Resource
+	 * @var Resource
 	 */
-	public function getSTDOUT() {
-		return $this->STDOUT;
-	}
+	protected $STDERR;
 
 	function __construct( $lines = 24, $cols = 80 ) {
 		$this->lines = $lines;
 		$this->cols  = $cols;
 
+		for( $x = 1; $x <= $cols; $x++ ) {
+			for( $y = 1; $y <= $lines; $y++ ) {
+				$this->matrix[$x][$y] = array('rune' => ' ');
+			}
+		}
+
 		$this->output_protocol = md5('virtTerm' . rand());
 
 		stream_wrapper_register($this->output_protocol, 'donatj\\VirtualTerminal\\OutputStream') or die('error creating wrapper');
 
-		$stdout = fopen($this->output_protocol . '://stdout', 'w');
-		$instance = OutputStream::latest_instance();
+		$this->STDOUT = fopen($this->output_protocol . '://stdout', 'w');
+		OutputStream::latest_instance()
+					->setTerminal($this);
 
-		$instance->setTerminal($this);
+		$this->STDERR = fopen($this->output_protocol . '://stdout', 'w');
+		OutputStream::latest_instance()
+					->setTerminal($this);
+	}
 
-		fwrite($stdout, "bbq funtimes!");
+	/**
+	 * @return Resource
+	 */
+	public function getSTDOUT() {
+		return $this->STDOUT;
 	}
 
 	/**
@@ -53,25 +65,10 @@ class Terminal {
 	}
 
 	/**
-	 * @param int $cols
-	 */
-	public function setCols( $cols ) {
-		$this->cols = $cols;
-	}
-
-	/**
 	 * @return int
 	 */
 	public function getLines() {
 		return $this->lines;
 	}
-
-	/**
-	 * @param int $lines
-	 */
-	public function setLines( $lines ) {
-		$this->lines = $lines;
-	}
-
 
 }

@@ -27,13 +27,25 @@ class Terminal {
 	 */
 	protected $STDERR;
 
-	function __construct( $lines = 24, $cols = 80 ) {
+	/**
+	 * @var bool
+	 */
+	protected $status_line_wrap = true;
+
+	/**
+	 * @var CommandCollection
+	 */
+	protected $command_collection;
+
+	function __construct( $lines = 24, $cols = 80, CommandCollection $command_collection ) {
 		$this->lines = $lines;
 		$this->cols  = $cols;
 
+		$this->command_collection = $command_collection;
+
 		for( $x = 1; $x <= $cols; $x++ ) {
 			for( $y = 1; $y <= $lines; $y++ ) {
-				$this->matrix[$x][$y] = array('rune' => ' ');
+				$this->matrix[$x][$y] = array( 'rune' => ' ' );
 			}
 		}
 
@@ -58,6 +70,13 @@ class Terminal {
 	}
 
 	/**
+	 * @return Resource
+	 */
+	public function getSTDERR() {
+		return $this->STDERR;
+	}
+
+	/**
 	 * @return int
 	 */
 	public function getCols() {
@@ -69,6 +88,11 @@ class Terminal {
 	 */
 	public function getLines() {
 		return $this->lines;
+	}
+
+	public function receiveRune( $rune ) {
+//		echo "|{$rune}";
+		$this->command_collection->match( $rune );
 	}
 
 }

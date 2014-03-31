@@ -37,26 +37,29 @@ class OutputStream {
 		$url           = parse_url($path);
 		$this->varname = $url["host"];
 
-//		$this->position = 0;
-
 		return true;
 	}
 
-//	function stream_read( $count ) {
-//		$ret = substr($GLOBALS[$this->varname], $this->position, $count);
-//		$this->position += strlen($ret);
-//
-//		return $ret;
-//	}
-
 	function stream_write( $data ) {
-		see($data, $this->varname);
-//		$left                    = substr($GLOBALS[$this->varname], 0, $this->position);
-//		$right                   = substr($GLOBALS[$this->varname], $this->position + strlen($data));
-//		$GLOBALS[$this->varname] = $left . $data . $right;
-//		$this->position += strlen($data);
+		$return = $this->mbStringToArray($data);
+
+		foreach($return as $rune) {
+			$this->terminal->receiveRune($rune);
+		}
 
 		return strlen($data);
+	}
+
+	private function mbStringToArray( $string ) {
+		$strlen = mb_strlen($string);
+		$array  = array();
+		while( $strlen ) {
+			$array[] = mb_substr($string, 0, 1, "UTF-8");
+			$string  = mb_substr($string, 1, $strlen, "UTF-8");
+			$strlen  = mb_strlen($string);
+		}
+
+		return $array;
 	}
 
 }

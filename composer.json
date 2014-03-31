@@ -1,0 +1,23 @@
+{
+    "name": "donatj/virtual-terminal",
+    "description": "A stream wrapper representing a terminal for testing",
+    "require-dev": {
+        "donatj/drop": "*",
+        "phpunit/phpunit": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jesse Donat",
+            "email": "donatj@gmail.com"
+        }
+    ],
+    "require": {
+
+    },
+	"autoload": {
+		"psr-0": {
+			"donatj": "src/"
+		}
+	}
+}

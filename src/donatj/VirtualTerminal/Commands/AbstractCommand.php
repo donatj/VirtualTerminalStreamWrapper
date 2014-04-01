@@ -13,11 +13,21 @@ abstract class AbstractCommand {
 	}
 
 	public function match( $rune ) {
-		echo "[{$rune}";
+//		echo "[{$rune}";
 		$pattern = $this->getPattern();
+
+		// @todo the following is just a basic proof of concept and not at all a decent pattern matching scheme
 		if( $rune == $pattern[count($this->matched)] ) {
-			$matched[] = $rune;
-			see('match');
+			$this->matched[] = $rune;
+			echo "[{$rune}]";
+
+			if(count($pattern) == count($this->matched)) {
+				$this->__invoke();
+				$this->reset();
+			}
+
+		}else{
+			$this->reset();
 		}
 	}
 
